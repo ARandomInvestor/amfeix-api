@@ -32,7 +32,7 @@ export class StorageContract{
 
     async getFundPerformance(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getFundPerformance");
+            let cache = this.cache.getCache("getFundPerformance");
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -51,7 +51,7 @@ export class StorageContract{
                 })
             }
 
-            this.setCache("getFundPerformance", index, 900);
+            this.cache.setCache("getFundPerformance", index, 900);
             resolve(index);
         }));
     }
@@ -59,14 +59,14 @@ export class StorageContract{
     //??????
     async getFee1(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getFee1");
+            let cache = this.cache.getCache("getFee1");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let value = await this.contract.methods.fee1().call({});
-            this.setCache("getFee1", value, 900);
+            this.cache.setCache("getFee1", value, 900);
 
             resolve(value);
         }))
@@ -75,14 +75,14 @@ export class StorageContract{
     //Referrer fee
     async getFee2(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getFee2");
+            let cache = this.cache.getCache("getFee2");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let value = await this.contract.methods.fee2().call({});
-            this.setCache("getFee2", value, 900);
+            this.cache.setCache("getFee2", value, 900);
 
             resolve(value);
         }))
@@ -91,14 +91,14 @@ export class StorageContract{
     //Full?
     async getFee3(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getFee3");
+            let cache = this.cache.getCache("getFee3");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let value = await this.contract.methods.fee3().call({});
-            this.setCache("getFee3", value, 900);
+            this.cache.setCache("getFee3", value, 900);
 
             resolve(value);
         }))
@@ -107,7 +107,7 @@ export class StorageContract{
 
     async getAUM(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getAUM");
+            let cache = this.cache.getCache("getAUM");
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -116,7 +116,7 @@ export class StorageContract{
             let value = (new BigNumber(await this.contract.methods.aum().call({}))).dividedBy(
                 (new BigNumber(10)).exponentiatedBy(await this.getDecimals())
             ).toFormat(0);
-            this.setCache("getAUM", value);
+            this.cache.setCache("getAUM", value);
 
             resolve(value);
         }))
@@ -125,14 +125,14 @@ export class StorageContract{
 
     async getDecimals(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("decimals");
+            let cache = this.cache.getCache("decimals");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let value = await this.contract.methods.decimals().call({});
-            this.setCache("decimals", value, 3600);
+            this.cache.setCache("decimals", value, 3600);
 
             resolve(value);
         }))
@@ -141,14 +141,14 @@ export class StorageContract{
 
     async getInvestors(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getInvestors");
+            let cache = this.cache.getCache("getInvestors");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let values = await this.contract.methods.getAllInvestors().call({});
-            this.setCache("getInvestors", values);
+            this.cache.setCache("getInvestors", values);
 
             resolve(values);
         }))
@@ -169,14 +169,14 @@ export class StorageContract{
 
     async getDepositAddressCount(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getDepositAddressCount");
+            let cache = this.cache.getCache("getDepositAddressCount");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.fundDepositAddressesLength().call({});
-            this.setCache("getDepositAddressCount", parseInt(v));
+            this.cache.setCache("getDepositAddressCount", parseInt(v));
 
             resolve(parseInt(v));
         }))
@@ -185,14 +185,14 @@ export class StorageContract{
 
     async getDepositAddress(n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getFileCache("contract", "deposit_address_" + n);
+            let cache = this.cache.getFileCache("contract", "deposit_address_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.fundDepositAddresses(n).call({});
-            this.setFileCache("contract", "deposit_address_" + n, v);
+            this.cache.setFileCache("contract", "deposit_address_" + n, v);
 
             resolve(v);
         }))
@@ -205,14 +205,14 @@ export class StorageContract{
 
     async getFeeAddressCount(){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getCache("getFeeAddressCount");
+            let cache = this.cache.getCache("getFeeAddressCount");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.feeAddressesLength().call({});
-            this.setCache("getFeeAddressCount", parseInt(v));
+            this.cache.setCache("getFeeAddressCount", parseInt(v));
 
             resolve(parseInt(v));
         }));
@@ -221,14 +221,14 @@ export class StorageContract{
 
     async getFeeAddress(n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getFileCache("contract", "fee_address_" + n);
+            let cache = this.cache.getFileCache("contract", "fee_address_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.feeAddresses(n).call({});
-            this.setFileCache("contract", "fee_address_" + n, v);
+            this.cache.setFileCache("contract", "fee_address_" + n, v);
 
             resolve(v);
         }));
@@ -250,7 +250,7 @@ export class StorageContract{
 
     async getTx(address, n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n);
+            let cache = this.cache.getFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -266,7 +266,7 @@ export class StorageContract{
                 timestamp: new Date(v.timestamp * 1000)
             };
 
-            this.setFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n, data);
+            this.cache.setFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n, data);
 
             resolve(data);
         }))
@@ -285,7 +285,7 @@ export class StorageContract{
 
     async getWithdrawRequest(address, n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.getFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n);
+            let cache = this.cache.getFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n);
             if(cache !== null){
 
                 resolve(cache);
@@ -303,7 +303,7 @@ export class StorageContract{
                 referal: v.referal
             };
 
-            this.setFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n, data);
+            this.cache.setFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n, data);
 
             resolve(data);
         }));

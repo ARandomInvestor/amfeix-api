@@ -59,6 +59,7 @@ export class InvestorAccount{
             for(let i in values){
                 let v = values[i];
                 v.pubkey = v.pubkey.split("/").pop();
+                v.txid = v.txid.split("/").pop();
                 if(v.action === 0){
                     if(txs.hasOwnProperty(v.txid)){
                         if(!txs[v.txid].hasOwnProperty("dupe")){
@@ -79,6 +80,7 @@ export class InvestorAccount{
             for(let j in requests){
                 let rtx = requests[j];
                 rtx.pubkey = rtx.pubkey.split("/").pop();
+                rtx.txid = rtx.txid.split("/").pop();
                 if(txs.hasOwnProperty(rtx.txid)){
                     if(txs[rtx.txid].hasOwnProperty("requested_exit") || rtx.pubkey !== txs[rtx.txid].pubkey/* || rtx.signature !== txs[rtx.txid].signature*/){
                         if(!txs[rtx.txid].hasOwnProperty("invalid_rtx")){

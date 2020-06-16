@@ -1,25 +1,13 @@
 "use strict";
 
-const CacheProvider = require('./CacheProvider');
-const StorageContract = require('./amfeix/StorageContract');
+export { CacheProvider } from './CacheProvider.js';
+export { StorageContract } from './amfeix/StorageContract.js';
 
-const InvestorAccount = require('./amfeix/InvestorAccount');
+export { InvestorAccount } from './amfeix/InvestorAccount.js';
 
-const BitcoinProvider = require('./bitcoin/BitcoinProvider');
-const FullNodeBitcoinProvider = require('./bitcoin/FullNodeBitcoinProvider');
-const BlockchainComBitcoinProvider = require('./bitcoin/BlockchainComBitcoinProvider');
-const BitcoinUnitConverter = require('./bitcoin/BitcoinUnitConverter');
+export { BitcoinProvider } from './bitcoin/BitcoinProvider.js';
+export { FullNodeBitcoinProvider } from './bitcoin/FullNodeBitcoinProvider.js';
+export { BlockchainComBitcoinProvider } from './bitcoin/BlockchainComBitcoinProvider.js';
+export { BitcoinUnitConverter } from './bitcoin/BitcoinUnitConverter.js';
 
-const EthereumUnitConverter = require('./ethereum/EthereumUnitConverter');
-
-
-module.exports = {
-    CacheProvider: CacheProvider,
-    StorageContract: StorageContract,
-    InvestorAccount: InvestorAccount,
-    BitcoinProvider: BitcoinProvider,
-    FullNodeBitcoinProvider: FullNodeBitcoinProvider,
-    BlockchainComBitcoinProvider: BlockchainComBitcoinProvider,
-    BitcoinUnitConverter: BitcoinUnitConverter,
-    EthereumUnitConverter: EthereumUnitConverter
-};
+export { EthereumUnitConverter } from './ethereum/EthereumUnitConverter.js';

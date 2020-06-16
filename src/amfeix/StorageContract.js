@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 
 import StorageABI from "./abi/Storage.js";
 
-export default class StorageContract{
+export class StorageContract{
     cache;
 
     constructor(web3, cache, btc = null, contractAddress = "0xb0963da9baef08711583252f5000Df44D4F56925") {

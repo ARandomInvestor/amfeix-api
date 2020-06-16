@@ -1,18 +1,8 @@
 'use strict';
 
-import async from "async"
-import https from "https";
-import zlib from "zlib";
-import crypto from "crypto";
-import http from "http"
-import fs from "fs"
-import path from "path"
-import ElectrumClient from "electrum-client"
 import bitcoin from "bitcoinjs-lib";
 
-import BigNumber from "bignumber.js";
-
-export default class BitcoinProvider{
+export class BitcoinProvider{
     cache;
 
     constructor(cache) {

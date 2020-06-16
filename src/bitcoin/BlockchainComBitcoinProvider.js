@@ -1,13 +1,11 @@
 'use strict';
 
 import async from "async"
-import crypto from "crypto";
-import bitcoin from "bitcoinjs-lib";
-import BitcoinProvider from "./BitcoinProvider.js";
+import { BitcoinProvider } from "./BitcoinProvider.js";
 import https from "https";
 import zlib from "zlib";
 
-export default class BlockchainComBitcoinProvider extends BitcoinProvider{
+export class BlockchainComBitcoinProvider extends BitcoinProvider{
 
     constructor(cache) {
         super(cache)

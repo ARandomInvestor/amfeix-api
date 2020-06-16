@@ -8,7 +8,7 @@ const units = {
     wei: new BigNumber("1")
 };
 
-export default class EthereumUnitConverter{
+export class EthereumUnitConverter{
     constructor(wei) {
         this.wei = wei instanceof BigNumber ? new BigNumber(wei) : new BigNumber(wei);
     }

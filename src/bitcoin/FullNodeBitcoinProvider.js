@@ -4,9 +4,9 @@ import async from "async"
 import crypto from "crypto";
 import ElectrumClient from "electrum-client"
 import bitcoin from "bitcoinjs-lib";
-import BitcoinProvider from "./BitcoinProvider.js";
+import { BitcoinProvider } from "./BitcoinProvider.js";
 
-export default class FullNodeBitcoinProvider extends BitcoinProvider{
+export class FullNodeBitcoinProvider extends BitcoinProvider{
 
     constructor(cache, client, index) {
         super(cache)

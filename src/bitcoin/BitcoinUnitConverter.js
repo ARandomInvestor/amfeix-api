@@ -9,7 +9,7 @@ const units = {
     msat: (new BigNumber("1")).dividedBy(1000),
 };
 
-export default class BitcoinUnitConverter{
+export class BitcoinUnitConverter{
     satoshi = new BigNumber(0);
 
     constructor(satoshi) {

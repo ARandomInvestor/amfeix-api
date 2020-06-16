@@ -6,7 +6,7 @@ import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";
 
-export default class InvestorAccount{
+export class InvestorAccount{
 
      static async fromEthereumAddress(address, contract) {
          return new Promise((async (resolve, reject) => {

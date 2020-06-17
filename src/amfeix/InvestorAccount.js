@@ -166,7 +166,7 @@ export class InvestorAccount{
 
                 for(let i in txdata.outs){
                     if(depositAddresses.includes(await this.contract.getBitcoin().getAddressForOutput(txdata.outs[i]))){
-                        if("value" in tx){
+                        if("value" in tx && !(new BigNumber(txdata.outs[i].value)).isEqualTo(tx.value)){
                             reject("Have more than one output with value for txid " + tx.txid);
                             return;
                         }

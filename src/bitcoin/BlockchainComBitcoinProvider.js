@@ -20,15 +20,14 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
 
             try{
                 let options = {
+                    hostname: "blockchain.info",
+                    method: task.method ? task.method : "GET",
+                    path: task.path,
                     headers: {
                         "Accept-Encoding": "gzip, deflate",
                         "Connection": "keep-alive"
                     }
                 };
-                let url = new URL(task.url);
-                for(let key in url){
-                    options[key] = url[key];
-                }
                 let req = https.request(options, (res) => {
                     let chunks = [];
                     let c = (err, data) => {
@@ -82,7 +81,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
             }
 
             this.queue.push({
-                url: "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true",
+                path: "/rawtx/"+txid+"?format=hex&cors=true",
                 key: "rawtx." + txid,
                 resolve: async (data) => {
                     if(data !== null && data.trim().match(/^[0-9a-f]+$/i) !== null){
@@ -114,7 +113,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
 
 
             this.queue.push({
-                url: "https://blockchain.info/rawtx/"+txid+"?cors=true",
+                path: "/rawtx/"+txid+"?cors=true",
                 key: "jsontx." + txid,
                 resolve: async (data) => {
                     if(data !== null){
@@ -154,7 +153,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
             let getPage = (page) => {
                 return new Promise((async (resolve, reject) => {
                     this.queue.push({
-                        url: "https://blockchain.info/rawaddr/"+address+"?limit="+entriesPerPage+"&offset="+(page * entriesPerPage)+"&cors=true",
+                        path: "/rawaddr/"+address+"?limit="+entriesPerPage+"&offset="+(page * entriesPerPage)+"&cors=true",
                         resolve: async (data) => {
                             if(data !== null){
                                 resolve(JSON.parse(data))

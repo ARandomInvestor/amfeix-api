@@ -1,6 +1,6 @@
 'use strict';
 
-import {BigNumber} from "bignumber.js";
+import BigNumber from "bignumber.js";
 
 const units = {
     btc: new BigNumber("100000000"),

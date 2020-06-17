@@ -1,6 +1,6 @@
 'use strict';
 
-import {BigNumber} from "bignumber.js";
+import BigNumber from "bignumber.js";
 
 const units = {
     eth: new BigNumber("1000000000000000000"),

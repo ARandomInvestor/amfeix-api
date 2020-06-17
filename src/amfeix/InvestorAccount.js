@@ -4,7 +4,7 @@ import Web3 from "web3";
 import {payments} from "bitcoinjs-lib";
 import ethereum_wallet from "ethereumjs-wallet";
 
-import {BigNumber} from "bignumber.js";
+import BigNumber from "bignumber.js";
 
 export class InvestorAccount{
 

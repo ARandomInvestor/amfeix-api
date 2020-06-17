@@ -1,6 +1,6 @@
 'use strict';
 
-import bitcoin from "bitcoinjs-lib";
+import * as bitcoin from "bitcoinjs-lib";
 
 export class BitcoinProvider{
     cache;

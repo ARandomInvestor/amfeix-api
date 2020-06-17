@@ -1,7 +1,7 @@
 'use strict';
 
 import Web3 from "web3";
-import bitcoin from "bitcoinjs-lib";
+import * as bitcoin from "bitcoinjs-lib";
 import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";

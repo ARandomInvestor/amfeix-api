@@ -185,14 +185,14 @@ export class StorageContract{
 
     async getDepositAddress(n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.cache.getFileCache("contract", "deposit_address_" + n);
+            let cache = await this.cache.getFileCache("contract", "deposit_address_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.fundDepositAddresses(n).call({});
-            this.cache.setFileCache("contract", "deposit_address_" + n, v);
+            await this.cache.setFileCache("contract", "deposit_address_" + n, v);
 
             resolve(v);
         }))
@@ -221,14 +221,14 @@ export class StorageContract{
 
     async getFeeAddress(n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.cache.getFileCache("contract", "fee_address_" + n);
+            let cache = await this.cache.getFileCache("contract", "fee_address_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
             let v = await this.contract.methods.feeAddresses(n).call({});
-            this.cache.setFileCache("contract", "fee_address_" + n, v);
+            await this.cache.setFileCache("contract", "fee_address_" + n, v);
 
             resolve(v);
         }));
@@ -250,7 +250,7 @@ export class StorageContract{
 
     async getTx(address, n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.cache.getFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n);
+            let cache = await this.cache.getFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -266,7 +266,7 @@ export class StorageContract{
                 timestamp: new Date(v.timestamp * 1000)
             };
 
-            this.cache.setFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n, data);
+            await this.cache.setFileCache("contract_tx", address.slice(2).toLowerCase() + "_" + n, data);
 
             resolve(data);
         }))
@@ -285,7 +285,7 @@ export class StorageContract{
 
     async getWithdrawRequest(address, n){
         return new Promise((async (resolve, reject) => {
-            let cache = this.cache.getFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n);
+            let cache = await this.cache.getFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n);
             if(cache !== null){
 
                 resolve(cache);
@@ -303,7 +303,7 @@ export class StorageContract{
                 referal: v.referal
             };
 
-            this.cache.setFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n, data);
+            await this.cache.setFileCache("contract_rtx", address.slice(2).toLowerCase() + "_" + n, data);
 
             resolve(data);
         }));

@@ -70,7 +70,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
                 reject(new Error("Invalid transaction id " + txid))
                 return;
             }
-            let cache = this.cache.getFileCache("rawtx", txid);
+            let cache = await this.cache.getFileCache("rawtx", txid);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -81,7 +81,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
                 key: "rawtx." + txid,
                 resolve: async (data) => {
                     if(data !== null && data.trim().match(/^[0-9a-f]+$/i) !== null){
-                        this.cache.setFileCache("rawtx", txid, data.trim());
+                        await this.cache.setFileCache("rawtx", txid, data.trim());
                         resolve(data.trim())
                         return;
                     }
@@ -100,7 +100,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
                 reject(new Error("Invalid transaction id " + txid))
                 return;
             }
-            let cache = this.cache.getFileCache("txinfo", txid);
+            let cache = await this.cache.getFileCache("txinfo", txid);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -125,7 +125,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
                         }
 
                         if(txinfo.height !== null){
-                            this.cache.setFileCache("txinfo", txid, txinfo);
+                            await this.cache.setFileCache("txinfo", txid, txinfo);
                         }else{
                             this.cache.setCache("txinfo." + txid, txinfo);
                         }

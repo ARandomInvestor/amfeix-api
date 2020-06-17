@@ -35,7 +35,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                 reject(new Error("Invalid transaction id " + txid))
                 return;
             }
-            let cache = this.cache.getFileCache("rawtx", txid);
+            let cache = await this.cache.getFileCache("rawtx", txid);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -47,7 +47,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                 key: "rawtx." + txid,
                 resolve: async (data) => {
                     if(data !== null && data.trim().match(/^[0-9a-f]+$/i) !== null){
-                        this.cache.setFileCache("rawtx", txid, data.trim());
+                        await this.cache.setFileCache("rawtx", txid, data.trim());
                         resolve(data.trim())
                         return;
                     }
@@ -64,7 +64,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                 reject(new Error("Invalid transaction id " + txid))
                 return;
             }
-            let cache = this.cache.getFileCache("txinfo", txid);
+            let cache = await this.cache.getFileCache("txinfo", txid);
             if(cache !== null){
                 resolve(cache);
                 return;
@@ -83,7 +83,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                         }
 
                         if(txinfo.height !== null){
-                            this.cache.setFileCache("txinfo", txid, txinfo);
+                            await this.cache.setFileCache("txinfo", txid, txinfo);
                         }else{
                             this.cache.setCache("txinfo." + txid, txinfo);
                         }
@@ -99,8 +99,8 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
 
 
     async getBlockInfo(hash){
-        return new Promise(((resolve, reject) => {
-            let cache = this.cache.getFileCache("blockheader", hash);
+        return new Promise((async (resolve, reject) => {
+            let cache = await this.cache.getFileCache("blockheader", hash);
             if (cache !== null) {
                 resolve(cache);
                 return;
@@ -112,7 +112,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                 key: "blockheader." + hash,
                 resolve: async (data) => {
                     if(data !== null){
-                        this.cache.setFileCache("blockheader", hash, data);
+                        await this.cache.setFileCache("blockheader", hash, data);
                     }
                     resolve(data)
                 },

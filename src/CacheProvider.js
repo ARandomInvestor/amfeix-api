@@ -27,7 +27,7 @@ export class CacheProvider{
         this.cache[k] = [v, Date.now() * age * 1000];
     }
 
-    getFileCache(type, k, i = 0){
+    async getFileCache(type, k, i = 0){
         let cache = this.getCache(type + "." + k);
         if(cache === null){
             try{
@@ -44,12 +44,16 @@ export class CacheProvider{
         return cache;
     }
 
-    setFileCache(type, k, v, i = 0){
-        this.setCache(type + "." + k, v, 3600);
-        fs.writeFile(path.resolve(this.path, "index", type, k[i], k + ".json"), JSON.stringify(v, null, " "), (err) => {
-            if(err){
-                throw err;
-            }
-        });
+    async setFileCache(type, k, v, i = 0){
+        new Promise(((resolve, reject) => {
+            this.setCache(type + "." + k, v, 3600);
+            fs.writeFile(path.resolve(this.path, "index", type, k[i], k + ".json"), JSON.stringify(v, null, " "), (err) => {
+                if(err){
+                    reject(err)
+                }else{
+                    resolve();
+                }
+            });
+        }))
     }
 }

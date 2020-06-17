@@ -9,7 +9,7 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
 
     constructor(cache) {
         super(cache)
-        this.queue = async.queue(async (task) => {
+        this.queue = async.queue(async (task, callback) => {
             if(task.key){
                 let cache = this.cache.getCache(task.key);
                 if(cache !== null){
@@ -33,11 +33,16 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
                     let c = (err, data) => {
                         if(err){
                             task.reject(err);
-                            callback();
+                            if(callback){
+                                callback();
+                            }
                             return;
                         }
 
                         task.resolve(data);
+                        if(callback){
+                            callback();
+                        }
                     };
                     res.on("data", (data) => {
                         chunks.push(data);
@@ -64,6 +69,9 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
             }catch (e) {
                 console.log(e);
                 task.reject(e);
+                if(callback){
+                    callback();
+                }
             }
         }, 8);
     }

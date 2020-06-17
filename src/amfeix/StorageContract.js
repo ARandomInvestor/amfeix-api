@@ -1,9 +1,6 @@
 'use strict';
 
-import Web3 from "web3";
-import fs from "fs";
-import path from "path";
-import BigNumber from "bignumber.js";
+import {BigNumber} from "bignumber.js";
 
 import StorageABI from "./abi/Storage.js";
 

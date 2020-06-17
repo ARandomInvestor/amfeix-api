@@ -19,12 +19,17 @@ export class BlockchainComBitcoinProvider extends BitcoinProvider{
             }
 
             try{
-                let req = https.request(task.url, {
+                let options = {
                     headers: {
                         "Accept-Encoding": "gzip, deflate",
                         "Connection": "keep-alive"
                     }
-                }, (res) => {
+                };
+                let url = new URL(task.url);
+                for(let key in url){
+                    options[key] = url[key];
+                }
+                let req = https.request(options, (res) => {
                     let chunks = [];
                     let c = (err, data) => {
                         if(err){

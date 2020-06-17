@@ -3,7 +3,7 @@
 import async from "async"
 import crypto from "crypto";
 import ElectrumClient from "electrum-client"
-import { address as BitcoinAddress } from "bitcoinjs-lib";
+import bitcoin from "bitcoinjs-lib";
 import { BitcoinProvider } from "./BitcoinProvider.js";
 
 export class FullNodeBitcoinProvider extends BitcoinProvider{
@@ -160,7 +160,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
                         return hash.digest();
                     };
 
-                    let scripthash = sha256(BitcoinAddress.toOutputScript(address)).reverse().toString("hex");
+                    let scripthash = sha256(bitcoin.address.toOutputScript(address)).reverse().toString("hex");
                     try{
                         let history = await electrum.request("blockchain.scripthash.get_history", [scripthash]);
                         await electrum.close();

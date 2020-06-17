@@ -1,6 +1,6 @@
 'use strict';
 
-import {payments, address as BitcoinAddress, Transaction} from "bitcoinjs-lib";
+import bitcoin from "bitcoinjs-lib";
 
 export class BitcoinProvider{
     cache;
@@ -31,23 +31,23 @@ export class BitcoinProvider{
         }
         if(input.witness){
             try{
-                return input.address = payments.p2wpkh({input: input.script, witness: input.witness}).address;
+                return input.address = bitcoin.payments.p2wpkh({input: input.script, witness: input.witness}).address;
             }catch (e) {}
             try{
-                return input.address = payments.p2wsh({input: input.script, witness: input.witness}).address;
+                return input.address = bitcoin.payments.p2wsh({input: input.script, witness: input.witness}).address;
             }catch (e) {}
         }
         try{
-            return input.address = payments.p2pkh({input: input.script}).address;
+            return input.address = bitcoin.payments.p2pkh({input: input.script}).address;
         }catch (e) {}
         try{
-            return input.address = payments.p2sh({input: input.script}).address;
+            return input.address = bitcoin.payments.p2sh({input: input.script}).address;
         }catch (e) {}
         try{
-            return input.address = payments.p2pk({input: input.script}).address;
+            return input.address = bitcoin.payments.p2pk({input: input.script}).address;
         }catch (e) {}
         try{
-            return input.address = payments.p2ms({input: input.script}).address;
+            return input.address = bitcoin.payments.p2ms({input: input.script}).address;
         }catch (e) {}
 
         return input.address = null;
@@ -57,11 +57,11 @@ export class BitcoinProvider{
         if(output.address){
             return output.address;
         }
-        return output.address = BitcoinAddress.fromOutputScript(output.script);
+        return output.address = bitcoin.address.fromOutputScript(output.script);
     }
 
     getTransactionId(data){
-        if(data instanceof Transaction){
+        if(data instanceof bitcoin.Transaction){
             return data.getId();
         }else if("hash" in data && Buffer.isBuffer(data.hash)){
             return data.hash.reverse().toString("hex");
@@ -103,7 +103,7 @@ export class BitcoinProvider{
             let tx;
 
             try{
-                tx = Transaction.fromHex(await this.getRawTransaction(txid));
+                tx = bitcoin.Transaction.fromHex(await this.getRawTransaction(txid));
             }catch (e) {
                 reject(e);
                 return;

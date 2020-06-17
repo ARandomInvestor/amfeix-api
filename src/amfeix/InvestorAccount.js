@@ -1,7 +1,7 @@
 'use strict';
 
 import Web3 from "web3";
-import {payments} from "bitcoinjs-lib";
+import bitcoin from "bitcoinjs-lib";
 import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";
@@ -34,7 +34,7 @@ export class InvestorAccount{
         this.pubkey = pubkey;
         let bpub = Buffer.from(pubkey, "hex");
         this.eth_address = ethereum_wallet.fromPublicKey(bpub, true).getChecksumAddressString();
-        this.btc_address = payments.p2pkh({
+        this.btc_address = bitcoin.payments.p2pkh({
             pubkey: bpub,
         }).address;
         this.contract = contract;

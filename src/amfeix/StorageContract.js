@@ -44,7 +44,7 @@ export class StorageContract{
                 index.push({
                     time: values.t[i],
                     timestamp: new Date(values.t[i] * 1000),
-                    value: new BigNumber(values.a[i]).dividedBy(div).toFormat(3)
+                    value: new BigNumber(values.a[i]).dividedBy(div).toFixed(3)
                 })
             }
 
@@ -112,7 +112,7 @@ export class StorageContract{
 
             let value = (new BigNumber(await this.contract.methods.aum().call({}))).dividedBy(
                 (new BigNumber(10)).exponentiatedBy(await this.getDecimals())
-            ).toFormat(0);
+            ).toFixed(0);
             this.cache.setCache("getAUM", value);
 
             resolve(value);

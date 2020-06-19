@@ -15,7 +15,13 @@ export class InvestorAccount{
              for(let i = 0; i < txCount; ++i){
                  try{
                      let tx = await contract.getTx(address, i);
-                     account = new InvestorAccount(tx.pubkey.split("/").pop(), contract)
+                     let pub = tx.pubkey.split("/").pop();
+                     account = new InvestorAccount(pub, contract)
+                     if(account.getEthereumAddress().toLowerCase() !== address.toLowerCase()){
+                         account = null;
+                         throw new Error("Not matching pubkey" + pub);
+                         continue;
+                     }
                      break;
                  }catch (e) {
                      console.log("Account " + address + ": " + e)

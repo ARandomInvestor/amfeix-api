@@ -10,6 +10,10 @@ export class InvestorAccount{
 
      static async fromEthereumAddress(address, contract) {
          return new Promise((async (resolve, reject) => {
+             if(address.toLowerCase() === contract.getSpecialStorageAddress()){
+                 reject(new Error("Tried to create account for special storage address"))
+                 return;
+             }
              let txCount = await contract.getTxCount(address);
              let account = null;
              for(let i = 0; i < txCount; ++i){
@@ -20,7 +24,6 @@ export class InvestorAccount{
                      if(account.getEthereumAddress().toLowerCase() !== address.toLowerCase()){
                          account = null;
                          throw new Error("Not matching pubkey" + pub);
-                         continue;
                      }
                      break;
                  }catch (e) {

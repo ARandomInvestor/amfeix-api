@@ -4,6 +4,8 @@ import BigNumber from "bignumber.js";
 
 import StorageABI from "./abi/Storage.js";
 
+import { WithdrawalConfirmationRecord } from "./WithdrawalConfirmationRecord";
+
 export class StorageContract{
     cache;
 
@@ -13,6 +15,10 @@ export class StorageContract{
         this.cache = cache;
         let ContractMeta = StorageABI;
         this.contract = new web3.eth.Contract(ContractMeta, contractAddress);
+    }
+
+    getSpecialStorageAddress(){
+        return "0x0000000000000000000000000000000000000000";
     }
 
     getProvider(){
@@ -35,7 +41,25 @@ export class StorageContract{
                 return;
             }
 
-            let values = await this.contract.methods.getAll().call({});
+            let values = null;
+
+            let maxTries = 5;
+            let lastException = null;
+
+            for(let i = 0; i < maxTries; ++i){
+                try{
+                    values = await this.contract.methods.getAll().call({});
+                    break;
+                }catch (e) {
+                    lastException = e;
+                }
+            }
+
+            if(values === null){
+                reject(lastException ? lastException : new Error("max tries reached"));
+                return;
+            }
+
             let index = [];
 
             let div = (new BigNumber(10)).exponentiatedBy(await this.getDecimals());
@@ -96,6 +120,21 @@ export class StorageContract{
 
             let value = await this.contract.methods.fee3().call({});
             this.cache.setCache("getFee3", value, 900);
+
+            resolve(value);
+        }))
+    }
+
+    async getOwner(){
+        return new Promise((async (resolve, reject) => {
+            let cache = this.cache.getCache("getOwner");
+            if(cache !== null){
+                resolve(cache);
+                return;
+            }
+
+            let value = await this.contract.methods.owner().call({});
+            this.cache.setCache("getOwner", value, 900);
 
             resolve(value);
         }))
@@ -308,6 +347,48 @@ export class StorageContract{
 
     async getWithdrawRequests(address){
        return this.getAllValues(this.getWithdrawRequestCount.bind(this), this.getWithdrawRequest.bind(this), address);
+    }
+
+    async getWithdrawalConfirmationRecords(){
+        return new Promise(((resolve, reject) => {
+            let txs = this.getTxs(this.getSpecialStorageAddress());
+            let records = [];
+            for(let i in txs){
+                let tx = txs[i];
+                try{
+                    if(tx.action == 1){
+                        let record = WithdrawalConfirmationRecord.fromSerializedReturnInvestmentData({
+                            method: "returnInvestment",
+                            parameters: [
+                                {
+                                    name: "address",
+                                    value: this.getSpecialStorageAddress()
+                                },
+                                {
+                                    name: "txid",
+                                    value: tx.txid
+                                },
+                                {
+                                    name: "pubkey",
+                                    value: tx.pubkey,
+                                },
+                                {
+                                    name: "signature",
+                                    value: tx.signature,
+                                },
+                            ],
+                        }, this);
+
+                        records.push(record);
+                    }
+                }catch (e) {
+
+                }
+            }
+
+            resolve(records);
+        }));
+
     }
 
 }

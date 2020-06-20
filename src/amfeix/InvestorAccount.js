@@ -79,7 +79,7 @@ export class InvestorAccount{
                 let v = values[i];
                 v.pubkey = v.pubkey.split("/").pop();
                 v.txid = v.txid.split("/").pop();
-                v.index = i;
+                v.index = parseInt(i);
                 if(v.action === 0){
                     if(txs.hasOwnProperty(v.txid)){
                         if(!txs[v.txid].hasOwnProperty("dupe")){
@@ -106,7 +106,7 @@ export class InvestorAccount{
                         let records = extraRecords[k].getAccountRecords(accountIndex);
                         for(let r in records){
                             let re = records[r];
-                            let tx = txs.find((tx) => {
+                            let tx = Object.values(txs).find((tx) => {
                                 return tx.index === re.index
                             });
                             if(tx === undefined){

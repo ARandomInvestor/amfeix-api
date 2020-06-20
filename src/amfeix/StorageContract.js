@@ -41,24 +41,7 @@ export class StorageContract{
                 return;
             }
 
-            let values = null;
-
-            let maxTries = 5;
-            let lastException = null;
-
-            for(let i = 0; i < maxTries; ++i){
-                try{
-                    values = await this.contract.methods.getAll().call({});
-                    break;
-                }catch (e) {
-                    lastException = e;
-                }
-            }
-
-            if(values === null){
-                reject(lastException ? lastException : new Error("max tries reached"));
-                return;
-            }
+            let values = values = await this.contract.methods.getAll().call({});
 
             let index = [];
 
@@ -183,7 +166,25 @@ export class StorageContract{
                 return;
             }
 
-            let values = await this.contract.methods.getAllInvestors().call({});
+            let values = null;
+
+            let maxTries = 5;
+            let lastException = null;
+
+            for(let i = 0; i < maxTries; ++i){
+                try{
+                    values = await this.contract.methods.getAllInvestors().call({});
+                    break;
+                }catch (e) {
+                    lastException = e;
+                }
+            }
+
+            if(values === null){
+                reject(lastException ? lastException : new Error("max tries reached"));
+                return;
+            }
+
             this.cache.setCache("getInvestors", values, 3600);
 
             resolve(values);
@@ -363,14 +364,14 @@ export class StorageContract{
     }
 
     async getWithdrawalConfirmationRecords(){
-        return new Promise(((resolve, reject) => {
+        return new Promise((async (resolve, reject) => {
             let cache = this.cache.getCache("getWithdrawalConfirmationRecords");
             if(cache !== null){
                 resolve(cache);
                 return;
             }
 
-            let txs = this.getTxs(this.getSpecialStorageAddress());
+            let txs = await this.getTxs(this.getSpecialStorageAddress());
             let records = [];
             for(let i in txs){
                 let tx = txs[i];

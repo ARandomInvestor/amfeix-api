@@ -139,7 +139,7 @@ export class WithdrawalConfirmationRecord{
         return entries;
     }
 
-    async static fromSerializedReturnInvestmentData(ob, contract){
+    static fromSerializedReturnInvestmentData(ob, contract){
         try{
             if(ob.method === "returnInvestment"){
                 let signature = JSON.parse(ob.parameters[3].value);
@@ -169,7 +169,7 @@ export class WithdrawalConfirmationRecord{
         throw new Error("Invalid record");
     }
 
-    async getSerializedReturnInvestmentData(){
+    getSerializedReturnInvestmentData(){
         return {
             method: "returnInvestment",
             parameters: [
@@ -184,7 +184,7 @@ export class WithdrawalConfirmationRecord{
                 },
                 {
                     name: "pubkey",
-                    value: await this.getSerializedCompressedEntries(),
+                    value: this.getSerializedCompressedEntries(),
                 },
                 {
                     name: "signature",

@@ -5,6 +5,8 @@ import * as bitcoin from "bitcoinjs-lib";
 
 import { BitcoinUnitConverter } from "../bitcoin/BitcoinUnitConverter";
 
+import pako from "pako"
+
 export class WithdrawalConfirmationRecord{
     entries = {};
     version = 1;
@@ -14,7 +16,7 @@ export class WithdrawalConfirmationRecord{
 
     constructor(contract) {
         this.contract = contract;
-        this.time = Date.now();
+        this.time = Math.floor(Date.now() / 1000);
     }
 
     finalize(){
@@ -184,7 +186,10 @@ export class WithdrawalConfirmationRecord{
             if(ob.method === "returnInvestment"){
                 let signature = JSON.parse(ob.parameters[3].value);
                 if(signature.version === 1){
-                    let entries = WithdrawalConfirmationRecord.fromSerializedCompressedEntries(ob.parameters[2].value);
+
+                    let rec = signature.compressed ? pako.inflate(atob(ob.parameters[2].value), {to: 'string'}) : ob.parameters[2].value;
+
+                    let entries = WithdrawalConfirmationRecord.fromSerializedCompressedEntries(rec);
 
 
                     let record = new WithdrawalConfirmationRecord(contract);
@@ -225,7 +230,7 @@ export class WithdrawalConfirmationRecord{
                 },
                 {
                     name: "pubkey",
-                    value: this.getSerializedCompressedEntries()
+                    value: btoa(pako.deflate(this.getSerializedCompressedEntries(), {to: 'string', level: 7}))
                 },
                 {
                     name: "signature",
@@ -233,6 +238,7 @@ export class WithdrawalConfirmationRecord{
                         method: "returnInvestment",
                         version: this.version,
                         time: this.time,
+                        compressed: true,
                         keys: ["+index", "+amount", "?to"]
                     }),
                 },

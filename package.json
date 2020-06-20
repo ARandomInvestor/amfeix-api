@@ -3,7 +3,9 @@
   "version": "1.0.4",
   "description": "",
   "main": "src/lib.js",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "keywords": [],
   "author": "ARandomInvestor",
   "license": "MIT",
@@ -18,6 +20,7 @@
     "ethereumjs-tx": "^2.1.2",
     "ethereumjs-wallet": "^0.6.3",
     "https": "^1.0.0",
+    "pako": "^1.0.11",
     "web3": "^1.2.6"
   },
   "repository": {

@@ -192,7 +192,7 @@ export class WithdrawalConfirmationRecord{
                     for(let accountIndex in entries){
                         for(let i in entries[accountIndex]){
                             let rs = entries[accountIndex][i];
-                            record.addPaymentEntry(accountIndex, rs.index, rs.withdrawalAddress, rs.isStandardWithdrawalAddress);
+                            record.addPaymentEntry(accountIndex, rs.index, rs.amount, rs.withdrawalAddress, rs.isStandardWithdrawalAddress);
                         }
                     }
 

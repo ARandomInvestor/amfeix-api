@@ -40,12 +40,12 @@ export class StorageContract{
             await this.cache.setFileCache("contract", "getInvestorsCache", investors);
         }
 
-        let accountIndex = investors.indexOf(account.toLowerCase());
+        let accountIndex = investors.indexOf(account.getEthereumAddress().toLowerCase());
 
         if(accountIndex === -1){ //Retry if local file cache is stale
             investors = (await this.getInvestors()).map((v) => {return v.toLowerCase();});
             await this.cache.setFileCache("contract", "getInvestorsCache", investors);
-            accountIndex = investors.indexOf(account.toLowerCase());
+            accountIndex = investors.indexOf(account.getEthereumAddress().toLowerCase());
         }
         return accountIndex === -1 ? null : accountIndex;
     }

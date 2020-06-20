@@ -27,7 +27,11 @@ export class WithdrawalConfirmationRecord{
             this.entries[accountIndex] = [];
         }
 
-        if(depositIndex in this.entries[accountIndex]){
+        let depositExists = this.entries[accountIndex].filter((v) => {
+            return v.index === depositIndex;
+        })
+
+        if(depositExists.length > 0){
             throw new Error("Index " + depositIndex + " already exists for account " + accountIndex);
         }
 

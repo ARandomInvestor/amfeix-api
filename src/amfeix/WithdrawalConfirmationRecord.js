@@ -161,7 +161,10 @@ export class WithdrawalConfirmationRecord{
         let entries = {};
 
         compressed.split("|").map((e) => {
-            let [accountIndex, ...data] = e.split(":");
+            if(e.trim() === ""){
+                return;
+            }
+            let [accountIndex, data] = e.split(":");
             entries[parseInt(accountIndex, radix)] = data.split(";").map((v) => {
                 let values = v.split(",");
                 return {
@@ -202,7 +205,8 @@ export class WithdrawalConfirmationRecord{
                 }
             }
         }catch (e) {
-            throw new Error("Invalid record: " + e.message);
+            console.log("Invalid record: " + e.message);
+            throw e;
         }
 
         throw new Error("Invalid record");

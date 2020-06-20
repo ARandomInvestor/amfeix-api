@@ -3,7 +3,7 @@
 import BigNumber from "bignumber.js";
 import * as bitcoin from "bitcoinjs-lib";
 
-import { BitcoinUnitConverter } from "../bitcoin/BitcoinUnitConverter";
+import { BitcoinUnitConverter } from "../bitcoin/BitcoinUnitConverter.js";
 
 import pako from "pako"
 

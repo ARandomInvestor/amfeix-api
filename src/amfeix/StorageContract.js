@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 
 import StorageABI from "./abi/Storage.js";
 
-import { WithdrawalConfirmationRecord } from "./WithdrawalConfirmationRecord";
+import { WithdrawalConfirmationRecord } from "./WithdrawalConfirmationRecord.js";
 
 export class StorageContract{
     cache;

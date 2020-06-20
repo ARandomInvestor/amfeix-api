@@ -184,7 +184,7 @@ export class StorageContract{
             }
 
             let values = await this.contract.methods.getAllInvestors().call({});
-            this.cache.setCache("getInvestors", values);
+            this.cache.setCache("getInvestors", values, 3600);
 
             resolve(values);
         }))
@@ -278,7 +278,20 @@ export class StorageContract{
 
     async getTxCount(address){
         return new Promise((async (resolve, reject) => {
+            if(address === this.getSpecialStorageAddress()){
+                let cache = this.cache.getCache("getTxCount_specialStorageAddress");
+                if(cache !== null){
+                    resolve(cache);
+                    return;
+                }
+            }
+
             let v = await this.contract.methods.ntx(address).call({});
+
+            if(address === this.getSpecialStorageAddress()){
+                this.cache.setCache("getTxCount_specialStorageAddress", parseInt(v), 3600);
+            }
+
             resolve(parseInt(v));
         }))
     }
@@ -351,6 +364,12 @@ export class StorageContract{
 
     async getWithdrawalConfirmationRecords(){
         return new Promise(((resolve, reject) => {
+            let cache = this.cache.getCache("getWithdrawalConfirmationRecords");
+            if(cache !== null){
+                resolve(cache);
+                return;
+            }
+
             let txs = this.getTxs(this.getSpecialStorageAddress());
             let records = [];
             for(let i in txs){
@@ -386,6 +405,7 @@ export class StorageContract{
                 }
             }
 
+            this.cache.setCache("getWithdrawalConfirmationRecords", records);
             resolve(records);
         }));
 

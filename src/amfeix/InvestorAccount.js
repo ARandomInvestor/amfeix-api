@@ -61,6 +61,16 @@ export class InvestorAccount{
         return this.pubkey;
     }
 
+    async getAccountIndex(){
+        let accountIndex = (await this.contract.getInvestors()).findIndex((v) => {
+            return v.toLowerCase() === this.getEthereumAddress().toLowerCase();
+        });
+        if(accountIndex === -1){
+            return null;
+        }
+        return accountIndex;
+    }
+
     async getTransactions(){
         return new Promise((async (resolve, reject) => {
             let values = await this.contract.getTxs(this.eth_address);
@@ -79,12 +89,39 @@ export class InvestorAccount{
                     }else{
                         txs[v.txid] = v;
                         txs[v.txid].exit_timestamp = null;
+                        txs[v.txid].exit_record = null;
                     }
                 }else if (v.action === 1){
                     txs[v.txid].exit_timestamp = v.time;
                 }
 
             }
+
+            try{
+                let accountIndex = await this.getAccountIndex();
+                if(accountIndex !== null){
+                    let extraRecords = await this.contract.getWithdrawalConfirmationRecords();
+
+                    for(let k in extraRecords){
+                        let records = extraRecords[k].getAccountRecords(accountIndex);
+                        for(let r in records){
+                            let re = records[r];
+                            let tx = txs.find((tx) => {
+                                return tx.index === re.index
+                            });
+                            if(tx === undefined){
+                                throw new Error("Could not find index " + re.index + " on deposits");
+                            }
+
+                            tx.exit_timestamp = extraRecords[k].getTime();
+                            tx.exit_record = extraRecords[k];
+                        }
+                    }
+                }
+            }catch (e) {
+                console.log(this.eth_address, e.message);
+            }
+
 
             let requests = await this.contract.getWithdrawRequests(this.eth_address);
             for(let j in requests){

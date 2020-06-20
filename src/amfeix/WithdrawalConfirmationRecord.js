@@ -9,14 +9,47 @@ export class WithdrawalConfirmationRecord{
     entries = {};
     version = 1;
     finalized = false;
+    txid = null;
+    time = null;
 
     constructor(contract) {
         this.contract = contract;
+        this.time = Date.now();
     }
 
     finalize(){
         this.finalized = true;
     }
+
+    setTime(time){
+        if(this.finalized){
+            throw new Error("Record is finalized");
+        }
+        this.time = time;
+    }
+
+    getTime(){
+        if(!this.finalized){
+            throw new Error("Record is not finalized");
+        }
+        return this.time;
+    }
+
+    setTransactionId(txid){
+        if(this.finalized){
+            throw new Error("Record is finalized");
+        }
+        this.txid = txid;
+    }
+
+    getTransactionId(){
+        if(!this.finalized){
+            throw new Error("Record is not finalized");
+        }
+        return this.txid;
+    }
+
+
 
     addPaymentEntry(accountIndex, depositIndex, amount, withdrawalAddress, isStandardWithdrawalAddress = true){
         if(this.finalized){
@@ -161,6 +194,8 @@ export class WithdrawalConfirmationRecord{
                         }
                     }
 
+                    record.setTransactionId(ob.parameters[1].value);
+                    record.setTime(signature.time);
                     record.finalize();
 
                     return record;
@@ -183,18 +218,18 @@ export class WithdrawalConfirmationRecord{
                 },
                 {
                     name: "txid",
-                    //TODO
-                    value: "[TRANSACTION ID produced by Electrum]"
+                    value: this.txid
                 },
                 {
                     name: "pubkey",
-                    value: this.getSerializedCompressedEntries(),
+                    value: this.getSerializedCompressedEntries()
                 },
                 {
                     name: "signature",
                     value: JSON.stringify({
                         method: "returnInvestment",
                         version: this.version,
+                        time: this.time,
                         keys: ["+index", "+amount", "?to"]
                     }),
                 },

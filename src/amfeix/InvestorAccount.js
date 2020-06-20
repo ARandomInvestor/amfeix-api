@@ -62,13 +62,7 @@ export class InvestorAccount{
     }
 
     async getAccountIndex(){
-        let accountIndex = (await this.contract.getInvestors()).findIndex((v) => {
-            return v.toLowerCase() === this.getEthereumAddress().toLowerCase();
-        });
-        if(accountIndex === -1){
-            return null;
-        }
-        return accountIndex;
+         return await this.contract.getAccountIndex(this);
     }
 
     async getTransactions(){

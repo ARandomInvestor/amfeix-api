@@ -33,6 +33,23 @@ export class StorageContract{
         return this.btc;
     }
 
+    async getAccountIndex(account){
+        let investors = await this.cache.getFileCache("contract", "getInvestorsCache");
+        if(investors === null){
+            investors = (await this.getInvestors()).map((v) => {return v.toLowerCase();});
+            await this.cache.setFileCache("contract", "getInvestorsCache", investors);
+        }
+
+        let accountIndex = investors.indexOf(account.toLowerCase());
+
+        if(accountIndex === -1){ //Retry if local file cache is stale
+            investors = (await this.getInvestors()).map((v) => {return v.toLowerCase();});
+            await this.cache.setFileCache("contract", "getInvestorsCache", investors);
+            accountIndex = investors.indexOf(account.toLowerCase());
+        }
+        return accountIndex === -1 ? null : accountIndex;
+    }
+
     async getFundPerformance(){
         return new Promise((async (resolve, reject) => {
             let cache = this.cache.getCache("getFundPerformance");

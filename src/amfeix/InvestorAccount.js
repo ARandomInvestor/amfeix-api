@@ -6,6 +6,8 @@ import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";
 
+bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+
 export class InvestorAccount{
 
      static async fromEthereumAddress(address, contract) {

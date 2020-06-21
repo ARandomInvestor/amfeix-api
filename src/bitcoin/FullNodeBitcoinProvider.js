@@ -6,6 +6,8 @@ import ElectrumClient from "electrum-client"
 import * as bitcoin from "bitcoinjs-lib";
 import { BitcoinProvider } from "./BitcoinProvider.js";
 
+bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+
 export class FullNodeBitcoinProvider extends BitcoinProvider{
 
     constructor(cache, client, index) {

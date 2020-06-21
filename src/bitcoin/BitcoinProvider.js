@@ -2,6 +2,8 @@
 
 import * as bitcoin from "bitcoinjs-lib";
 
+bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+
 export class BitcoinProvider{
     cache;
 

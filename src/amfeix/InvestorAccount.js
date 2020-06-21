@@ -313,11 +313,10 @@ export class InvestorAccount{
                  let transactions = balance.transactions;
                  let txs = await btc.getAddressTransactions(this.btc_address);
                  let matchingTransactions = [];
-                 let txtrack = [];
                  for(let i in txs){
                      let tx = txs[i];
                      let txid = btc.getTransactionId(tx);
-                     txtrack[i] = {};
+                     let txtrack = {};
 
                      txtrack.track_txid = [];
 
@@ -354,7 +353,7 @@ export class InvestorAccount{
                              if(btx.exit_timestamp !== null){
                                  let timeDiff = Math.abs(btx.exit_timestamp - (await btc.getTransactionBlockDetails(txid)).time);
 
-                                 if(timeDiff < 3600){
+                                 if(timeDiff < (3600 * 4)){
                                      for(let k in values){
                                          let v = values[k];
                                          let valueDiff = btx.balance.minus(v).absoluteValue();

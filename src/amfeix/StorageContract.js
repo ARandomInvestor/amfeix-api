@@ -58,7 +58,7 @@ export class StorageContract{
                 return;
             }
 
-            let values = values = await this.contract.methods.getAll().call({});
+            let values = await this.contract.methods.getAll().call({});
 
             let index = [];
 

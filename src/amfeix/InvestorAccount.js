@@ -421,9 +421,6 @@ export class InvestorAccount{
 
                      if(txtrack.hasOwnProperty("track_type")){
                          let ob = {track_type: txtrack.track_type, track_txid: txtrack.track_txid};
-                         for(let j in tx){
-                             ob[j] = tx[j];
-                         }
                          matchingTransactions.push(ob);
                      }
                  }

@@ -1,8 +1,8 @@
 'use strict';
 
-import * as bitcoin from "bitcoinjs-lib";
+import * as bitcoinjs from "bitcoinjs-lib";
 
-bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+const bitcoin = "default" in bitcoinjs ? bitcoinjs.default : bitcoinjs;
 
 export class BitcoinProvider{
     cache;

@@ -3,10 +3,10 @@
 import async from "async"
 import crypto from "crypto";
 import ElectrumClient from "electrum-client"
-import * as bitcoin from "bitcoinjs-lib";
+import * as bitcoinjs from "bitcoinjs-lib";
 import { BitcoinProvider } from "./BitcoinProvider.js";
 
-bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+const bitcoin = "default" in bitcoinjs ? bitcoinjs.default : bitcoinjs;
 
 export class FullNodeBitcoinProvider extends BitcoinProvider{
 

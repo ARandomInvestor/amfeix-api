@@ -1,12 +1,12 @@
 'use strict';
 
 import Web3 from "web3";
-import * as bitcoin from "bitcoinjs-lib";
 import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";
+import * as bitcoinjs from "bitcoinjs-lib";
 
-bitcoin = "default" in bitcoin ? bitcoin.default : bitcoin;
+const bitcoin = "default" in bitcoinjs ? bitcoinjs.default : bitcoinjs;
 
 export class InvestorAccount{
 

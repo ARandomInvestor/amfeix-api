@@ -316,9 +316,10 @@ export class InvestorAccount{
                  for(let i in txs){
                      let tx = txs[i];
                      let txid = btc.getTransactionId(tx);
-                     let txtrack = {};
-
-                     txtrack.track_txid = [];
+                     let txtrack = {
+                         txid: txid,
+                         track_txid: []
+                     };
 
                      for(let j in transactions){
                          let btx = transactions[j];
@@ -420,8 +421,7 @@ export class InvestorAccount{
                      }
 
                      if(txtrack.hasOwnProperty("track_type")){
-                         let ob = {track_type: txtrack.track_type, track_txid: txtrack.track_txid};
-                         matchingTransactions.push(ob);
+                         matchingTransactions.push(txtrack);
                      }
                  }
 

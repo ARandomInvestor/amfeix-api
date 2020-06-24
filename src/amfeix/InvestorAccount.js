@@ -5,8 +5,10 @@ import ethereum_wallet from "ethereumjs-wallet";
 
 import BigNumber from "bignumber.js";
 import * as bitcoinjs from "bitcoinjs-lib";
+import * as bitcoinjsMessage from "bitcoinjs-message"
 
 const bitcoin = "default" in bitcoinjs ? bitcoinjs.default : bitcoinjs;
+const bitcoinMessage = "default" in bitcoinjsMessage ? bitcoinjsMessage.default : bitcoinjsMessage;
 
 export class InvestorAccount{
 
@@ -126,7 +128,17 @@ export class InvestorAccount{
                 rtx.txid = rtx.txid.split("/").pop();
                 rtx.index = j;
                 if(txs.hasOwnProperty(rtx.txid)){
-                    if(txs[rtx.txid].hasOwnProperty("requested_exit") || rtx.pubkey !== txs[rtx.txid].pubkey/* || rtx.signature !== txs[rtx.txid].signature*/){
+                    let signatureVerificationResult = this.contract.getExtraRequestVerification() === null || rtx.time <= this.contract.getExtraRequestVerification();
+                    if(!signatureVerificationResult){
+                        try{
+                            signatureVerificationResult = bitcoinMessage.verify(rtx.txid + ":" + rtx.pubkey, this.getBitcoinAddress(), rtx.signature)
+                        }catch (e) {
+                            console.log("WARNING: invalid extra verification for " + this.eth_address);
+                            console.log(e)
+                        }
+                    }
+
+                    if(txs[rtx.txid].hasOwnProperty("requested_exit") || rtx.pubkey !== txs[rtx.txid].pubkey || !signatureVerificationResult/* || rtx.signature !== txs[rtx.txid].signature*/){
                         if(!txs[rtx.txid].hasOwnProperty("invalid_rtx")){
                             txs[rtx.txid].invalid_rtx = [];
                         }

@@ -1,6 +1,6 @@
 {
   "name": "amfeix-api",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "",
   "main": "src/lib.js",
   "files": [
@@ -15,6 +15,7 @@
     "bignumber.js": "^9.0.0",
     "bitcoin-core": "^3.0.0",
     "bitcoinjs-lib": "^5.1.7",
+    "bitcoinjs-message": "^2.1.1",
     "bs58check": "^2.1.2",
     "electrum-client": "0.0.6",
     "ethereumjs-tx": "^2.1.2",

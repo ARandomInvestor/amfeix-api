@@ -15,10 +15,15 @@ export class StorageContract{
         this.cache = cache;
         let ContractMeta = StorageABI;
         this.contract = new web3.eth.Contract(ContractMeta, contractAddress);
+        this.extraVerificationEnabled = null;
     }
 
     getSpecialStorageAddress(){
         return "0x0000000000000000000000000000000000000000";
+    }
+
+    getExtraRequestVerification(){
+        return this.extraVerificationEnabled;
     }
 
     getProvider(){

@@ -15,11 +15,16 @@ export class StorageContract{
         this.cache = cache;
         let ContractMeta = StorageABI;
         this.contract = new web3.eth.Contract(ContractMeta, contractAddress);
-        this.extraVerificationEnabled = null;
+        this.extraWithdrawalFeeEnabled = 1591055000;
+        this.extraVerificationEnabled = 1592915984;
     }
 
     getSpecialStorageAddress(){
         return "0x0000000000000000000000000000000000000000";
+    }
+
+    getExtraWithdrawalFee(){
+        return this.extraWithdrawalFeeEnabled;
     }
 
     getExtraRequestVerification(){

@@ -272,8 +272,8 @@ export class InvestorAccount{
                     }
                 }
 
-                if(tx.hasOwnProperty("requested_exit") && this.contract.getExtraWithdrawalFee() !== null && tx.requested_exit >= this.contract.getExtraWithdrawalFee()){
-                    let wdFee = 0.05; //-5% withdrawal fee
+                if(tx.hasOwnProperty("requested_exit") && this.contract.getExtraWithdrawalFeeTime() !== null && tx.requested_exit >= this.contract.getExtraWithdrawalFeeTime()){
+                    let wdFee = this.contract.getExtraWithdrawalFee();
                     tx.withdrawalFee = tx.balance.multipliedBy(wdFee);
                     tx.balance = tx.balance.multipliedBy(1.0 - wdFee);
                 }

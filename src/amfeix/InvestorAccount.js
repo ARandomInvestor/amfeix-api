@@ -89,7 +89,7 @@ export class InvestorAccount{
                         txs[v.txid].exit_timestamp = null;
                         txs[v.txid].exit_record = null;
                     }
-                }else if (v.action === 1){
+                }else if (v.action === 1 && v.txid in txs){
                     txs[v.txid].exit_timestamp = v.time;
                 }
 

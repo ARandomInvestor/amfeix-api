@@ -43,7 +43,7 @@ export class BitcoinProvider{
             return input.address = bitcoin.payments.p2pkh({input: input.script}).address;
         }catch (e) {}
         try{
-            return input.address = bitcoin.payments.p2sh({input: input.script}).address;
+            return input.address = bitcoin.payments.p2sh(input.witness ? {redeem: bitcoin.payments.p2wpkh({witness: input.witness})} : {input: input.script}).address;
         }catch (e) {}
         try{
             return input.address = bitcoin.payments.p2pk({input: input.script}).address;

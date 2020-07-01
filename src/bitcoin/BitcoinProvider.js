@@ -66,7 +66,7 @@ export class BitcoinProvider{
         if(data instanceof bitcoin.Transaction){
             return data.getId();
         }else if("hash" in data && Buffer.isBuffer(data.hash)){
-            return data.hash.reverse().toString("hex");
+            return Buffer.from(data.hash).reverse().toString("hex");
         }else{
             throw new Error("Input data does not contain transaction id");
         }
@@ -131,12 +131,12 @@ export class BitcoinProvider{
                 let tx = txs[index];
                 let txid = this.getTransactionId(tx);
                 let bytehash = tx.getHash(false);
-                for(let j in tx.outs){
-                    if(this.getAddressForOutput(tx.outs[j]) === address){
-                        outputs[txid + ":" + index] = Object.assign({
+                for(let outputIndex in tx.outs){
+                    if(this.getAddressForOutput(tx.outs[outputIndex]) === address){
+                        outputs[txid + ":" + outputIndex] = Object.assign({
                             hash: bytehash,
-                            index: index
-                        }, tx.outs[j]);
+                            index: outputIndex
+                        }, tx.outs[outputIndex]);
                     }
                 }
             }

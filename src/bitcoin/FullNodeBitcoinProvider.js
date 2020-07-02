@@ -146,91 +146,84 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
     }
 
     async getElectrumAddressHistory(address){
-        return new Promise((async (resolve, reject) => {
-            if(this.index === null){
-                reject(new Error("this.index === null"));
+        if(this.index === null){
+            throw new Error("this.index === null");
+        }
+
+        let tryReceive = async () => {
+            let electrum = new ElectrumClient(this.index.port, this.index.host, this.index.ssl ? 'ssl' : 'tcp');
+            await electrum.connect();
+
+            let sha256 = (data) => {
+                let hash = crypto.createHash('sha256');
+                hash.update(data);
+                return hash.digest();
+            };
+
+            let scripthash = sha256(bitcoin.address.toOutputScript(address)).reverse().toString("hex");
+            try{
+                let history = await electrum.request("blockchain.scripthash.get_history", [scripthash]);
+                await electrum.close();
+                return history;
+            }catch (e) {
+                await electrum.close();
+                throw e;
             }
+        }
 
-            let tryReceive = async () => {
-                return new Promise(async (resolve, reject) => {
-                    let electrum = new ElectrumClient(this.index.port, this.index.host, this.index.ssl ? 'ssl' : 'tcp');
-                    await electrum.connect();
+        let history = null;
+        let lastError = null;
 
-                    let sha256 = (data) => {
-                        let hash = crypto.createHash('sha256');
-                        hash.update(data);
-                        return hash.digest();
-                    };
-
-                    let scripthash = sha256(bitcoin.address.toOutputScript(address)).reverse().toString("hex");
-                    try{
-                        let history = await electrum.request("blockchain.scripthash.get_history", [scripthash]);
-                        await electrum.close();
-                        resolve(history);
-                    }catch (e) {
-                        await electrum.close();
-                        reject(e)
-                    }
-                });
+        for(let retry = 0; retry < 5; ++retry){
+            try{
+                history = await tryReceive()
+                break;
+            }catch (e) {
+                lastError = e;
             }
+        }
 
-            let history = null;
+        if(history === null){
+            throw new Error("maxed out retries for " + address + ": " + lastError.message)
+        }
 
-            for(let retry = 0; retry < 5; ++retry){
-                try{
-                    history = await tryReceive()
-                    break;
-                }catch (e) {
-                    console.log(e)
-                }
-            }
-
-            if(history === null){
-                reject(new Error("maxed out retries for " + address))
-            }
-
-            resolve(history);
-        }));
-
+        return history;
     }
 
     async getAddressTransactions(address, limit = null) {
-        return new Promise(async (resolve, reject) => {
-            let cache = this.cache.getCache("addresstx." + address);
-            if (cache !== null) {
-                resolve(cache);
-                return;
-            }
-            let entries = null;
-            try{
-                entries = await this.getElectrumAddressHistory(address);
-            }catch (e) {
-                reject(e)
-                return;
-            }
+        let cache = this.cache.getCache("addresstx." + address);
+        if (cache !== null) {
+            return cache;
+        }
+        let entries = null;
+        try{
+            entries = await this.getElectrumAddressHistory(address);
+        }catch (e) {
+            throw e;
+        }
 
-            let newList = [];
-            let mapping = {};
+        let newList = [];
+        let mapping = {};
 
-            if (entries !== null && entries.length > 0) {
-                for (let i in entries) {
-                    if (mapping.hasOwnProperty(entries[i].tx_hash)) {
-                        continue;
-                    }
-
-                    let tx = await this.getTransaction(entries[i].tx_hash);
-                    mapping[entries[i].tx_hash] = tx;
-                    newList.push(tx);
-                    if(limit !== null && newList.length >= limit){
-                        break;
-                    }
+        if (entries !== null && entries.length > 0) {
+            for (let i in entries) {
+                if (mapping.hasOwnProperty(entries[i].tx_hash)) {
+                    continue;
                 }
 
-                this.cache.setCache("addresstx." + address, newList);
-                resolve(newList);
-            } else {
-                resolve([]);
+                let tx = await this.getTransaction(entries[i].tx_hash);
+                mapping[entries[i].tx_hash] = tx;
+                newList.push(tx);
+                if(limit !== null && newList.length >= limit){
+                    break;
+                }
             }
-        });
+
+            this.cache.setCache("addresstx." + address, newList);
+            return newList;
+        } else {
+            return [];
+        }
+
     }
 }

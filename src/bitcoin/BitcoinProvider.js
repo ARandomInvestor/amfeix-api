@@ -90,66 +90,59 @@ export class BitcoinProvider{
     }
 
     async getTransaction(txid){
-        return new Promise((async (resolve, reject) => {
-            if (txid.match(/^[0-9a-f]{64}$/i) === null) {
-                reject(new Error("Invalid transaction id " + txid))
-                return;
-            }
+        if (txid.match(/^[0-9a-f]{64}$/i) === null) {
+            throw new Error("Invalid transaction id " + txid)
+        }
 
-            let cache = this.cache.getCache("tx." + txid);
-            if(cache !== null){
-                resolve(cache);
-                return;
-            }
+        let cache = this.cache.getCache("tx." + txid);
+        if(cache !== null){
+            return cache;
+        }
 
-            let tx;
+        let tx;
 
-            try{
-                tx = bitcoin.Transaction.fromHex(await this.getRawTransaction(txid));
-            }catch (e) {
-                reject(e);
-                return;
-            }
+        try{
+            tx = bitcoin.Transaction.fromHex(await this.getRawTransaction(txid));
+        }catch (e) {
+            throw e;
+        }
 
-            this.cache.setCache("tx." + txid, tx);
-            resolve(tx);
-        }));
+        this.cache.setCache("tx." + txid, tx);
+        return tx;
     }
 
 
 
     async getAddressUnspentOutputs(address) {
-        return new Promise((async (resolve, reject) => {
-            let txs = await this.getAddressTransactions(address);
+        let txs = await this.getAddressTransactions(address);
 
-            let outputs = {
+        let outputs = {
 
-            };
+        };
 
-            //Add all outputs ever received
-            for(let index in txs){
-                let tx = txs[index];
-                let txid = this.getTransactionId(tx);
-                let bytehash = tx.getHash(false);
-                for(let outputIndex in tx.outs){
-                    if(this.getAddressForOutput(tx.outs[outputIndex]) === address){
-                        outputs[txid + ":" + outputIndex] = Object.assign({
-                            hash: bytehash,
-                            index: outputIndex
-                        }, tx.outs[outputIndex]);
-                    }
+        //Add all outputs ever received
+        for(let index in txs){
+            let tx = txs[index];
+            let txid = this.getTransactionId(tx);
+            let bytehash = tx.getHash(false);
+            for(let outputIndex in tx.outs){
+                if(this.getAddressForOutput(tx.outs[outputIndex]) === address){
+                    outputs[txid + ":" + outputIndex] = Object.assign({
+                        hash: bytehash,
+                        index: outputIndex
+                    }, tx.outs[outputIndex]);
                 }
             }
+        }
 
-            //Delete all used up
-            for(let index in txs){
-                let tx = txs[index];
-                for(let j in tx.ins){
-                    delete outputs[this.getTransactionId(tx.ins[j]) + ":" + tx.ins[j].index]
-                }
+        //Delete all used up
+        for(let index in txs){
+            let tx = txs[index];
+            for(let j in tx.ins){
+                delete outputs[this.getTransactionId(tx.ins[j]) + ":" + tx.ins[j].index]
             }
+        }
 
-            resolve(outputs);
-        }));
+        return outputs;
     }
 }

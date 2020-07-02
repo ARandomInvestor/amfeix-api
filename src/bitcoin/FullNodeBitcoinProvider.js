@@ -184,7 +184,7 @@ export class FullNodeBitcoinProvider extends BitcoinProvider{
         }
 
         if(history === null){
-            throw new Error("maxed out retries for " + address + ": " + lastError.message)
+            throw new Error("maxed out retries for " + address + ": " + lastError)
         }
 
         return history;

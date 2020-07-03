@@ -17,7 +17,7 @@ export class StorageContract{
         this.contract = new web3.eth.Contract(ContractMeta, contractAddress);
         this.extraWithdrawalFeeEnabled = 1591055000;
         this.extraWithdrawalFee = 0.05; //-5% withdrawal fee
-        this.extraVerificationEnabled = 1592915984;
+        this.extraVerificationEnabled = 1593790000;
     }
 
     getSpecialStorageAddress(){
